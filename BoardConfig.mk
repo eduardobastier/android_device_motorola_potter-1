@@ -32,15 +32,23 @@ TARGET_BOOTLOADER_BOARD_NAME := MSM8953
 TARGET_NO_BOOTLOADER := true
 
 
-# Kernel
+#TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/boot.img-zImage
+#TARGET_PREBUILT_DTB := $(DEVICE_PATH)/boot.img-dt
+
 BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=30 msm_rtb.filter=0x237 ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci lpm_levels.sleep_disabled=1 vmalloc=350M androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x80000000
 BOARD_KERNEL_PAGESIZE := 2048
-BOARD_KERNEL_TAGS_OFFSET := 0x00000100
-BOARD_RAMDISK_OFFSET := 0x01000000
-BOARD_MKBOOTIMG_ARGS :=  --ramdisk_offset 0x01000000 --tags_offset 0x00000100 --kernel_offset 0x00008000 --second_offset 0x00f00000 --dt device/motorola/potter/dt.img
-BOARD_CUSTOM_BOOTIMG_MK := device/motorola/potter/mkbootimg.mk
-TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/kernel
+BOARD_KERNEL_SEPARATED_DT := true
+
+BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01000000 --tags_offset 0x00000100
+BOARD_CUSTOM_BOOTIMG_MK := $(LOCAL_PATH)/mkbootimg.mk
+TARGET_CUSTOM_DTBTOOL := dtbTool_moto
+TARGET_KERNEL_ARCH := arm
+KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_OS)-x86/arm/arm-eabi-4.8/bin
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-eabi-
+
+TARGET_KERNEL_CONFIG := potter_defconfig
+TARGET_KERNEL_SOURCE := kernel/motorola/msm8953
 
 # Partitions
 BOARD_BOOTIMAGE_PARTITION_SIZE := 0x04000000
@@ -73,3 +81,4 @@ TW_INPUT_BLACKLIST := "hbtp_vm"
 # Encryption
 TARGET_HW_DISK_ENCRYPTION := true
 TW_INCLUDE_CRYPTO := true
+TARGET_CRYPTFS_HW_PATH := $(LOCAL_PATH)/cryptfs_hw
